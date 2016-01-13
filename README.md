@@ -1,3 +1,12 @@
-Purpose: To display in to the user the most common words used in various RSS feeds for a specified number of entries in those feeds.  The user chooses which feeds and the number of entries.
+Purpose: To display to the user the words used in an RSS feeds with the number of occurrences of each word, in decreasing order.  The user decides which
+RSS Feed they'd like to use, and the results are then generated through a Python server using Bottle.py.
 
-This application will be using python to parse the rss feeds and calculate the words and their frequencies.  It will then use the Python web-framework "Bottle" (see link: http://bottlepy.org/docs/dev/index.html#) as a server to distribute the web code to display in the users browser, and will receive notifications of the users actions and act accordingly.
+Hopes:
+-To test a wider variety of RSS feeds to make sure that the server's handling of RSS is adequate.
+-To figure out why certain non-alphanumeric characters are not being removed with my algorithm
+-To give the option of eliminating common words (i.e. "the", "and", etc.) or just a specified list of words.
+-To allow for the user to increase the number of entries they would like the data to contain.
+-To meet someone that could possibly use this program or a close variation of it for legitimate research to
+make meaning out of word patterns.  Maybe a linguistics or psychology person or someone 
+that studies media, or maybe human computer interaction.  Not sure, but that would be cool.
+
