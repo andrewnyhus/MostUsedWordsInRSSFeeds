@@ -189,7 +189,7 @@ class Forms:
 
                                 var resultsListId = 'resultsList' + i;
                                 var resultsList = $('<textarea readonly id="'+resultsListId+'" cols = "40" rows="7"></textarea>');
-
+                                $(resultsList).css('visibility', 'hidden');
 
                                 $(this).append(btn);
                                 $(this).append($("<br>"));
@@ -223,10 +223,12 @@ class Forms:
                         var resultString = '';
                         for(z = 0; z < results.length; z++){
                             resultString = resultString + results[z] + "\\n" + line + "\\n";
-
                         }
 
                         $(resultsList).val(resultString);
+
+                        $(resultsList).css('visibility', 'visible');
+
 
                     }
 
