@@ -140,7 +140,7 @@ class Forms:
 
                     function generateGetEntriesResultsButtonWithIndex(index){
 
-                        var getResultsBtn = $('<button type="button" class="btn btn-success">Analyze RSS Entries</button>');
+                        var getResultsBtn = $('<button type="button" style="background-color:orange;" class="btn btn-success">Analyze RSS Entries</button>');
                         $(getResultsBtn).css('visibility', 'hidden');
 
 
@@ -188,7 +188,7 @@ class Forms:
                                 $(dropdownFeeds).css('visibility', 'hidden');
 
                                 var resultsListId = 'resultsList' + i;
-                                var resultsList = $('<textarea id="'+resultsListId+'" cols="30" rows="5"></textarea>');
+                                var resultsList = $('<textarea readonly id="'+resultsListId+'" cols = "40" rows="7"></textarea>');
 
 
                                 $(this).append(btn);
@@ -214,15 +214,15 @@ class Forms:
                     function populateResultsListWithIndex(index, results){
                         var resultsListid = 'resultsList' + index;
                         var resultsList = $('#'+resultsListid);
-                        var numCols = resultsList.cols;
-                        var line = '';
+                        var numCols = document.getElementById(resultsListid).cols;
+                        var line = "";
                         for(i = 0; i < numCols; i++){
                             line = line + "-";
                         }
 
                         var resultString = '';
                         for(z = 0; z < results.length; z++){
-                            resultString = resultString + results[z] + line;
+                            resultString = resultString + results[z] + "\\n" + line + "\\n";
 
                         }
 
@@ -235,11 +235,19 @@ class Forms:
               <style>
                 body{
                     background-color:rgb(109, 155, 186);
+                    color:white;
                 }
 
                 .jumbotron{
                     background-color:rgb(109, 155, 186);
                 }
+
+                textarea{
+                    background-color:rgb(109, 155, 186);
+                    color:white;
+                }
+
+
 
               </style>
             </head>
