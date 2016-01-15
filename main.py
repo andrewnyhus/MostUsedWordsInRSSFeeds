@@ -7,7 +7,7 @@ from RSSFeedCenter import RSSFeedCenter
 
 app = Bottle()
 htmlStringsForm = Forms()
-addNewRowBtnString = '<button id="newRowButton" style="background-color:orange;" class="btn btn-primary btn-block">Add more feeds</button>;'
+addNewRowBtnString = '<button id="newRowButton" style="background-color:orange;" class="btn btn-primary btn-block">Add more feeds</button>'
 
 @app.get('/')
 def landingPage():

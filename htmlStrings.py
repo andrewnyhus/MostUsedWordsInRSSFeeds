@@ -9,9 +9,9 @@ class Forms:
               <title>Most Common Words in RSS Feed Counter</title>
               <meta http-equiv="content-type" content="text/html; charset=utf-8">
               <meta name="viewport" content="width=device-width, initial-scale=1">
-              <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
               <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
               <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+              <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
                 <script type='text/javascript'>
 
@@ -30,50 +30,127 @@ class Forms:
                         var serviceSelectorString = "#dropdownServices" + btnIndex;
                         var feedSelectorString = "#dropdownFeeds"+ btnIndex;
 
-                        var dropdownFeed = $(feedSelectorString);
-                        var dropdownService = $(serviceSelectorString);
-
                         $("#button"+btnIndex).css('visibility', 'hidden');
-                        $(dropdownService).css('visibility', 'visible');
-                        $(dropdownFeed).css('visibility', 'visible');
+                        $(serviceSelectorString).css('visibility', 'visible');
+                        $(feedSelectorString).css('visibility', 'visible');
                         var getResultsBtn = document.getElementsByClassName("btn btn-success")[btnIndex];
                         $(getResultsBtn).css('visibility', 'visible');
+                        var dropdownWidth = $(serviceSelectorString).css('width');
 
                         for(i = 0; i < servicesData.length; i++){
+
                             var currentValueString = servicesData[i];
-                            var currentOpt = '<option value="' + currentValueString + '">' + currentValueString;
-                            currentOpt = $(currentOpt + "</option>");
 
-                            $(dropdownService).append(currentOpt);
+                            var currOptBtnStr = '<button type="button"  data-selected="false"  style="background-color:orange;color:white;" class="btn btn-success">'+currentValueString+'</button>';
+                            var currOptBtn = $(currOptBtnStr);
+
+                            currOptBtn.css('width', dropdownWidth);
+                            currOptBtn.on('click', function(e){
+
+                                var dropdownMenu = document.getElementById('dropdownServices'+ btnIndex).getElementsByClassName('dropdown-menu')[0];
+                                var arrOfDropdownButtons = dropdownMenu.getElementsByTagName('button');
+
+                                for(z = 0; z < arrOfDropdownButtons.length; z++){
+                                    arrOfDropdownButtons[z].setAttribute('data-selected', 'false');
+                                }
+                                e.target.setAttribute('data-selected', 'true');
+
+                                var indexOfTarget = 0;
+                                for(y = 0; y < arrOfDropdownButtons.length; y++){
+                                    if(arrOfDropdownButtons[y].getAttribute('data-selected') == true || arrOfDropdownButtons[y].getAttribute('data-selected') == 'true'){
+                                        indexOfTarget = y;
+                                    }
+                                }
+
+
+                                handleServiceDropDownChange(indexOfTarget, btnIndex, servicesData, feedsByServiceData);
+                            })
+
+                            var currentOpt = $('<li></li>');
+                            currentOpt.append(currOptBtn);
+
+                            $(serviceSelectorString).find(".dropdown-menu").append(currentOpt);
                         }
 
-                        handleServiceDropDownChange($(dropdownService), feedsByServiceData, $(dropdownFeed));
+                    }
 
-                        $( serviceSelectorString ).change(function() {
-                            handleServiceDropDownChange(this, feedsByServiceData, $(dropdownFeed));
-                        });
+                    function handleServiceDropDownChange(selectedServiceIndex, dropIndex, servicesData, feedsData){
+                        var serviceSelectorString = "#dropdownServices" + dropIndex;
+                        var feedSelectorString = "#dropdownFeeds"+ dropIndex;
+
+                        var serviceDropdownButton = $($(serviceSelectorString).find("button")[0]);
+                        var indexOfSpanElementBeginning = (""+serviceDropdownButton.html()).search('<');
+
+                         var newDropdownHTML;
+                         var newTitleDropdown = servicesData[selectedServiceIndex];
+
+                         if(indexOfSpanElementBeginning == -1){
+                            //the span element is missing
+                            newDropdownHTML = newTitleDropdown;
+                         }else{
+                            var spanString = serviceDropdownButton.html().substring(indexOfSpanElementBeginning);
+                            newDropdownHTML = newTitleDropdown + spanString;
+                         }
+
+                        serviceDropdownButton.html(newDropdownHTML);
+
+
+                        handleFeedsDropDown(dropIndex, feedsData[selectedServiceIndex]);
 
                     }
 
-                    function handleServiceDropDownChange(serviceDropDown, feedsData, feedDropDown){
+                    function handleFeedsDropDown(dropIndex, feedData){
+                        var feedDropdown = $("#dropdownFeeds"+ dropIndex);
 
-                        var sddIndex = $(serviceDropDown).prop("selectedIndex");
-                        handleFeedsDropDown(feedDropDown, feedsData[sddIndex]);
+                        $(feedDropdown).find(".dropdown-menu").html('');
+                        var dropdownWidth = $("#dropdownServices"+dropIndex).css('width');
 
-                    }
-
-                    function handleFeedsDropDown(feedDropDown, feedData){
-                        feedDropDown.html('');
                         for(i = 0; i < feedData.length; i++){
-                            var currentOptionValue = feedData[i][1];
-                            var currentOptionTitle = feedData[i][0];
+                            var currentBtnValue = feedData[i][1];
+                            var currentBtnTitle = feedData[i][0];
 
-                            var currentOption = '<option value="' +currentOptionValue+ '">' + currentOptionTitle;
-                            currentOption = $(currentOption + "</option>");
+                            var currOptBtnStr = '<button type="button" data-selected="false"  style="background-color:orange;color:white;" value="'+currentBtnValue+'" class="btn btn-success">'+currentBtnTitle+'</button>';
+                            var currOptBtn = $(currOptBtnStr);
 
-                            $(feedDropDown).append(currentOption);
+                            currOptBtn.css('width', dropdownWidth);
+
+
+                            currOptBtn.on('click', function(e){
+
+                                var dropdownMenu = document.getElementById('dropdownFeeds'+ dropIndex).getElementsByClassName('dropdown-menu')[0];
+                                var arrOfDropdownButtons = dropdownMenu.getElementsByTagName('button');
+
+                                for(z = 0; z < arrOfDropdownButtons.length; z++){
+                                    arrOfDropdownButtons[z].setAttribute('data-selected', 'false');
+                                }
+                                e.target.setAttribute('data-selected', 'true');
+
+                                var newTitleDropdown = e.target.textContent;
+
+                                var feedDropdownButton = $($(feedDropdown).find("button")[0]);
+                                var indexOfSpanElementBeginning = (""+feedDropdownButton.html()).search('<');
+
+                                 var newDropdownHTML;
+
+                                 if(indexOfSpanElementBeginning == -1){
+                                    //the span element is missing
+                                    newDropdownHTML = newTitleDropdown;
+                                 }else{
+                                    var spanString = feedDropdownButton.html().substring(indexOfSpanElementBeginning);
+                                    newDropdownHTML = newTitleDropdown + spanString;
+                                 }
+
+                                $(feedDropdownButton).html(newDropdownHTML);
+
+                            })
+
+                            var currentOpt = $('<li></li>');
+                            currentOpt.append(currOptBtn);
+
+                            $(feedDropdown).find(".dropdown-menu").append(currentOpt);
 
                         }
+
                     }
 
                     function addNewRow(){
@@ -125,7 +202,7 @@ class Forms:
                     }
 
                     function generateAddFeedButtonWithIndex(index){
-                        var btnString = '<button id="button'+ index +'" name="newFeedBtn" class="btn btn-default btn-block-center" >+ New Feed</button>';
+                        var btnString = '<button id="button'+ index +'" name="newFeedBtn" style="background-color:orange;color:white;"  class="btn btn-default btn-block-center" >+ New Feed</button>';
 
                         return btnString ;
                     }
@@ -140,14 +217,14 @@ class Forms:
 
                     function generateGetEntriesResultsButtonWithIndex(index){
 
-                        var getResultsBtn = $('<button type="button" style="background-color:orange;" class="btn btn-success">Analyze RSS Entries</button>');
+                        var getResultsBtn = $('<button type="button" style="background-color:orange;color:white;" class="btn btn-success">Analyze RSS Entries</button>');
                         $(getResultsBtn).css('visibility', 'hidden');
 
 
                             $(getResultsBtn).on('click', function(e){
                                 $.ajax({
                                     type: "GET",
-                                    url: "/getResults/"+ convertRSSFeedUrlToAcceptableWildcard($("#dropdownFeeds"+index).val()) ,
+                                    url: "/getResults/"+ convertRSSFeedUrlToAcceptableWildcard(getValueOfFeedsDropdown(index)) ,
                                     contentType: "application/json; charset=utf-8",
                                     data: { id: e.target.class },
                                     success: function(data) {
@@ -155,7 +232,6 @@ class Forms:
                                         var wordsObject = jsonObject.RSS[0].words;
                                         var resultsArray = [];
                                         for(i = 0; i < wordsObject.length; i++){
-                                            //console.log(i+') word:'+ wordsObject[i].word + ':# times:' + wordsObject[i].occurrences);
                                             resultsArray[i] = '"' + wordsObject[i].word + '" appeared ' + wordsObject[i].occurrences + ' times.';
                                         }
                                         populateResultsListWithIndex(index, resultsArray);
@@ -169,6 +245,21 @@ class Forms:
 
                     }
 
+                    function getValueOfFeedsDropdown(index){
+                        var dropdownMenu = document.getElementById('dropdownFeeds'+ index).getElementsByClassName('dropdown-menu')[0];
+                        var arrOfDropdownButtons = dropdownMenu.getElementsByTagName('button');
+
+
+                        for(i = 0; i < arrOfDropdownButtons.length; i++){
+                            var currIsSelectedValue = arrOfDropdownButtons[i].getAttribute("data-selected");
+                            if(currIsSelectedValue == true || currIsSelectedValue == 'true'){
+                                return $(arrOfDropdownButtons[i]).val();
+                            }
+                        }
+                        return;
+
+                    }
+
                     function fillRowWithCellNumStartingAt(beginningCellIndexOfRow){
                         var leftCellIndex = beginningCellIndexOfRow;
                         var middleCellIndex = beginningCellIndexOfRow + 1;
@@ -179,13 +270,15 @@ class Forms:
                             if(i == leftCellIndex || i == middleCellIndex || i == rightCellIndex){
                                 var btn = generateAddFeedButtonWithIndex(i);
 
+                                var dropdownPartOne = '<div class="dropdown"  ><button class="btn btn-primary dropdown-toggle" style="background-color:orange;color:white;"  type="button" data-toggle="dropdown">';
+                                var dropdownPartTwo = '<span class="caret"></span></button><ul style="background-color:orange; width:190px; max-height:115px; overflow:auto;"  class="dropdown-menu"></ul></div></div>';
+
                                 var dropdownServicesId = 'dropdownServices' + i;
-                                var dropdownServices = $('<select id="'+dropdownServicesId+'" ></select>');
-                                $(dropdownServices).css('visibility', 'hidden');
+                                var dropdownServices = $('<div id="'+dropdownServicesId+'" class="container"  >' + dropdownPartOne + 'Choose One' + dropdownPartTwo);
+
 
                                 var dropdownFeedsId = 'dropdownFeeds' + i;
-                                var dropdownFeeds = $('<select id="'+dropdownFeedsId+'" ></select>');
-                                $(dropdownFeeds).css('visibility', 'hidden');
+                                var dropdownFeeds = $('<div id="'+dropdownFeedsId+'" class="container" >' + dropdownPartOne + 'Choose One' + dropdownPartTwo);
 
                                 var resultsListId = 'resultsList' + i;
                                 var resultsList = $('<textarea readonly id="'+resultsListId+'" cols = "40" rows="7"></textarea>');
@@ -202,6 +295,14 @@ class Forms:
                                 $(this).append($("<br>"));
                                 $(this).append(resultsList);
 
+                                var buttonWidth = $('#button' + i).css('width');
+                                var dropdownWidth = (parseInt(buttonWidth.replace(/px/,""))+68)+"px";
+
+                                $(dropdownFeeds).css('width', dropdownWidth);
+                                $(dropdownFeeds).css('visibility', 'hidden');
+
+                                $(dropdownServices).css('width', dropdownWidth);
+                                $(dropdownServices).css('visibility', 'hidden');
 
                             }
                             i++;
@@ -249,11 +350,14 @@ class Forms:
                     color:white;
                 }
 
-
+                .col-sm-4{
+                    border:1px solid white;
+                }
 
               </style>
             </head>
         '''
+
 
     def getPageTitleHeader(self):
         return '''
