@@ -27,14 +27,25 @@ class Forms:
 
                     function replaceButtonAndDisplayChoices(btnIndex, servicesData, feedsByServiceData){
 
+
+                        var getResultsBtn = $("#getResultsBtn"+btnIndex);
+
+                        $(getResultsBtn).css('visibility', 'visible');
+
                         var serviceSelectorString = "#dropdownServices" + btnIndex;
                         var feedSelectorString = "#dropdownFeeds"+ btnIndex;
 
                         $("#button"+btnIndex).css('visibility', 'hidden');
+
                         $(serviceSelectorString).css('visibility', 'visible');
                         $(feedSelectorString).css('visibility', 'visible');
-                        var getResultsBtn = document.getElementsByClassName("btn btn-success")[btnIndex];
-                        $(getResultsBtn).css('visibility', 'visible');
+
+                        var enterRSSParagraphId = "enterRSSParagraph" + btnIndex;
+                        var enterRSSInputId = "enterRSSInput" + btnIndex;
+
+                        $("#"+enterRSSParagraphId).css('visibility', 'visible');
+                        $("#"+enterRSSInputId).css('visibility', 'visible');
+
                         var dropdownWidth = $(serviceSelectorString).css('width');
 
                         for(i = 0; i < servicesData.length; i++){
@@ -215,16 +226,37 @@ class Forms:
                         return slashFreeURL;
                     }
 
+                    function getProperURLAtIndex(index){
+
+                        var properURLToAnalyze;
+
+
+                        if($("#enterRSSInput"+index).val() != ""){
+                            console.log($("#enterRSSInput"+index).val());
+                            properURLToAnalyze = $("#enterRSSInput"+index).val();
+                        }else{
+                            console.log('b');
+                            properURLToAnalyze = getValueOfFeedsDropdown(index);
+                        }
+                        return properURLToAnalyze;
+
+                    }
+
                     function generateGetEntriesResultsButtonWithIndex(index){
 
-                        var getResultsBtn = $('<button type="button" style="background-color:orange;color:white;" class="btn btn-success">Analyze RSS Entries</button>');
+                        var enterRSSParagraphId = "enterRSSParagraph" + index;
+                        var enterRSSInputId = "enterRSSInput" + index;
+                        var getResultsId = 'getResultsBtn' + index;
+
+                        var getResultsBtn = $('<button type="button" style="background-color:orange;color:white;" id="'+getResultsId+'" class="btn btn-success">Analyze RSS Entries</button>');
                         $(getResultsBtn).css('visibility', 'hidden');
 
 
                             $(getResultsBtn).on('click', function(e){
+                                console.log('heyrrr');
                                 $.ajax({
                                     type: "GET",
-                                    url: "/getResults/"+ convertRSSFeedUrlToAcceptableWildcard(getValueOfFeedsDropdown(index)) ,
+                                    url: "/getResults/"+ convertRSSFeedUrlToAcceptableWildcard(getProperURLAtIndex(index)),
                                     contentType: "application/json; charset=utf-8",
                                     data: { id: e.target.class },
                                     success: function(data) {
@@ -290,6 +322,13 @@ class Forms:
                                 $(this).append($("<br>"));
                                 $(this).append(dropdownFeeds);
                                 $(this).append($("<br>"));
+
+                                var enterRSSParagraphId = "enterRSSParagraph"+i;
+                                var enterRSSInputId = "enterRSSInput"+i;
+
+                                $(this).append($('<p id="'+enterRSSParagraphId+'">or enter link to RSS Feed:</p>'));
+                                $(this).append($('<input type="text" id="'+enterRSSInputId+'">'));
+                                $(this).append($("<br>"));
                                 $(this).append($("<br>"));
                                 $(this).append(generateGetEntriesResultsButtonWithIndex(i));
                                 $(this).append($("<br>"));
@@ -303,6 +342,13 @@ class Forms:
 
                                 $(dropdownServices).css('width', dropdownWidth);
                                 $(dropdownServices).css('visibility', 'hidden');
+
+                                var enterRSSParagraphId = "enterRSSParagraph" + i;
+                                var enterRSSInputId = "enterRSSInput" + i;
+
+                                $("#"+enterRSSParagraphId).css('visibility', 'hidden');
+                                $("#"+enterRSSInputId).css('visibility', 'hidden');
+
 
                             }
                             i++;
@@ -354,6 +400,10 @@ class Forms:
                     border:1px solid white;
                 }
 
+                input{
+                    color:black;
+                }
+
               </style>
             </head>
         '''
@@ -364,7 +414,9 @@ class Forms:
             <div class="jumbotron">
                 <p style = "margin-left:20px;" >To begin, please click on one of the buttons below that reads "+ New Feed"
                     Next, specify which feed you want to analyze, and then the results will be displayed of every word that occurs in the
-                    feed more than once in the given entry set.
+                    feed more than once in the given entry set.  If you would like to use a feed not shown in the drop down, make sure it is a RSS url.
+                    If you want to choose a feed from the drop down menus, make sure that the text entry field for RSS urls
+                    is empty.
                 </p>
             </div>
 

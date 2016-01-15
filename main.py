@@ -33,7 +33,6 @@ def getResults():
 @app.route('/getResults/<feedURL>', methods=['GET'])
 def getResults(feedURL):
     feedURL = feedURL.replace('$@$@', '/')
-    #feedCenter = RSSFeedCenter()
     return RSSFeedCenter().getResultsFromFeed(feedURL)
 
 
