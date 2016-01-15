@@ -9,7 +9,13 @@ NYTimes - http://www.nytimes.com/services/xml/rss/index.html <br />
 More cool feeds to browse and try:
 NASA feeds- https://www.nasa.gov/content/nasa-rss-feeds <br />
 
-Hopes:
+Screenshot:<br />
+
+![logo]
+
+[logo]: https://raw.githubusercontent.com/andrewnyhus/MostUsedWordsInRSSFeeds/master/screenshot.png
+
+Hopes:<br />
 -To test a wider variety of RSS feeds to make sure that the server's handling of RSS is adequate.<br />
 -To figure out why certain non-alphanumeric characters are not being removed with my algorithm.<br />
 -To give the option of eliminating common words (i.e. "the", "and", etc.) or just a specified list of words.<br />
